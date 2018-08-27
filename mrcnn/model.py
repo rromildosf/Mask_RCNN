@@ -2313,7 +2313,8 @@ class MaskRCNN():
                     imgaug.augmenters.GaussianBlur(sigma=(0.0, 5.0))
                 ])
 	    custom_callbacks: Optional. Add custom callbacks to be called
-	        with the keras fit_generator method. Must be list of type keras.callbacks. 
+	        with the keras fit_generator method. Must be list of type keras.callbacks. If supplied and 
+            you want to save checkpoints, create a custom callback to checkpoints.
         no_augmentation_sources: Optional. List of sources to exclude for
             augmentation. A source is string that identifies a dataset and is
             defined in the Dataset class.
@@ -2346,17 +2347,17 @@ class MaskRCNN():
         callbacks = [
             keras.callbacks.TensorBoard(log_dir=self.log_dir,
                                         histogram_freq=0, write_graph=True, write_images=False),
-            keras.callbacks.ModelCheckpoint(self.checkpoint_path,
-                                            verbose=0, save_weights_only=True),
         ]
 	
         # Add custom callbacks to the list
         if custom_callbacks:
             callbacks += custom_callbacks
-
+        else:
+            callbacks.append( keras.callbacks.ModelCheckpoint(self.checkpoint_path,
+                                             verbose=0, save_weights_only=True) )
         # Train
         log("\nStarting at epoch {}. LR={}\n".format(self.epoch, learning_rate))
-        log("Checkpoint Path: {}".format(self.checkpoint_path))
+        log("Checkpoint Path: {}, OR you custom callback path.".format(self.checkpoint_path))
         self.set_trainable(layers)
         self.compile(learning_rate, self.config.LEARNING_MOMENTUM)
 
