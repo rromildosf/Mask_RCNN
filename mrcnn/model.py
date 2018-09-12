@@ -2271,7 +2271,7 @@ class MaskRCNN():
                 print('Re-starting from epoch %d' % self.epoch)
 
         # Directory for training logs
-        self.log_dir = os.path.join(self.model_dir, "{}{:%Y%m%dT%H%M}".format(
+        self.log_dir = os.path.join(self.model_dir, "{}{:%Y%m%d}".format(
             self.config.NAME.lower(), now))
 
         # Create log_dir if not exists
